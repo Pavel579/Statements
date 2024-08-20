@@ -1,7 +1,5 @@
 FROM php:fpm-alpine
 
-LABEL maintainer="sergey@volkar.ru"
-
 # Copy php config
 COPY ./conf/php.ini /usr/local/etc/php/php.ini
 
@@ -15,9 +13,6 @@ RUN apk add --no-cache libpq-dev \
 # Intl
 RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
-
-# OPCache (if you need it by any means)
-# RUN docker-php-ext-install opcache
 
 # XDebug
 ARG INSTALL_XDEBUG=false
@@ -41,7 +36,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Symfony CLI
 RUN curl -sS https://get.symfony.com/cli/installer | bash
-RUN mv /root/.symfony/bin/symfony /usr/local/bin/symfony
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
 
 # Git config
 RUN git config --global user.email "email@domain.com" \

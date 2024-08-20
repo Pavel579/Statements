@@ -1,7 +1,5 @@
 FROM nginx:stable-alpine
 
-LABEL maintainer="sergey@volkar.ru"
-
 COPY ./conf/nginx.conf /etc/nginx/
 COPY ./conf/default.conf /etc/nginx/conf.d/
 
