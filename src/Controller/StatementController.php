@@ -19,20 +19,20 @@ class StatementController extends AbstractController
     {
     }
 
+    /**
+     * Сохранение заявки
+     * @param StatementDto $statementDto
+     * @return JsonResponse
+     */
     #[Route('/save', methods: ['POST'])]
     public function save(StatementDto $statementDto): JsonResponse
     {
         try {
             $user = $this->security->getUser();
-            $errors = $this->validator->validate($statementDto);
+            $validationResponse = $this->validateDto($statementDto);
 
-            if (count($errors) > 1) {
-                $errorsString = '';
-                foreach ($errors as $error) {
-                    $errorsString .= $error->getPropertyPath() . ': ' . $error->getMessage() . "\n";
-                }
-
-                return new JsonResponse($errorsString);
+            if ($validationResponse) {
+                return $validationResponse;
             }
             $statement = $this->statementService->save($statementDto, $user);
 
@@ -44,6 +44,7 @@ class StatementController extends AbstractController
     }
 
     /**
+     * Подписание заявки
      * @throws Exception
      */
     #[Route('/sign/{statementId}', methods: ['POST'])]
@@ -60,6 +61,7 @@ class StatementController extends AbstractController
     }
 
     /**
+     * Удаление заявки
      * @throws Exception
      */
     #[Route('/delete/{statementId}', methods: ['DELETE'])]
@@ -75,6 +77,7 @@ class StatementController extends AbstractController
     }
 
     /**
+     * Редактирование заявки
      * @throws Exception
      */
     #[Route('/edit/{statementId}', methods: ['PATCH'])]
@@ -82,15 +85,10 @@ class StatementController extends AbstractController
     {
         try{
             $user = $this->security->getUser();
-            $errors = $this->validator->validate($statementDto);
+            $validationResponse = $this->validateDto($statementDto);
 
-            if (count($errors) > 1) {
-                $errorsString = '';
-                foreach ($errors as $error) {
-                    $errorsString .= $error->getPropertyPath() . ': ' . $error->getMessage() . "\n";
-                }
-
-                return new JsonResponse($errorsString);
+            if ($validationResponse) {
+                return $validationResponse;
             }
             $statement = $this->statementService->edit($statementId, $statementDto, $user->getId());
             return $this->json($statement);
@@ -99,6 +97,10 @@ class StatementController extends AbstractController
         }
     }
 
+    /**
+     * Получить все заявки текущего пользователя
+     * @return JsonResponse
+     */
     #[Route('/get-all', methods: ['GET'])]
     public function getAllByCurrentUser(): JsonResponse
     {
@@ -109,5 +111,24 @@ class StatementController extends AbstractController
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
         }
+    }
+
+    /**
+     * Валидация StatementDto
+     * @param StatementDto $dto
+     * @return JsonResponse|null
+     */
+    private function validateDto(StatementDto $dto): ?JsonResponse
+    {
+        $errors = $this->validator->validate($dto);
+
+        if (count($errors) > 1) {
+            $errorsString = '';
+            foreach ($errors as $error) {
+                $errorsString .= $error->getPropertyPath() . ': ' . $error->getMessage() . "\n";
+            }
+            return new JsonResponse($errorsString);
+        }
+        return null;
     }
 }

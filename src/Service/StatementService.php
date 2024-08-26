@@ -109,6 +109,4 @@ class StatementService
         }
         return $statement;
     }
-
-
 }
