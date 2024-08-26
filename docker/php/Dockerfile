@@ -15,7 +15,7 @@ RUN docker-php-ext-configure intl \
     && docker-php-ext-install intl
 
 # XDebug
-ARG INSTALL_XDEBUG=false
+ARG INSTALL_XDEBUG=true
 RUN if [ ${INSTALL_XDEBUG} = true ]; \
   then \
     pecl install xdebug && docker-php-ext-enable xdebug; \
