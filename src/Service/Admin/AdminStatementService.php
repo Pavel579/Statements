@@ -10,7 +10,10 @@ use Exception;
 
 class AdminStatementService
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly StatementService $statementService)
+    public function __construct(
+        private readonly EntityManagerInterface $entityManager,
+        private readonly StatementService $statementService
+    )
     {
     }
 

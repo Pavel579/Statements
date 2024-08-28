@@ -8,12 +8,15 @@ use App\Enum\StatusEnum;
 use App\Repository\StatementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 class StatementService
 {
 
-    public function __construct(private readonly StatementRepository    $statementRepository,
-                                private readonly EntityManagerInterface $entityManager)
+    public function __construct(
+        private readonly StatementRepository    $statementRepository,
+        private readonly EntityManagerInterface $entityManager
+    )
     {
     }
 
@@ -40,11 +43,12 @@ class StatementService
     /**
      * @throws Exception
      */
-    public function sign(int $statementId, int $userId): Statement
+    public function sign(int $statementId, int $userId, LoggerInterface $logger): Statement
     {
         $statement = $this->findStatementById($statementId);
         if ($statement->getAuthor()->getId() != $userId) {
-            throw new Exception("Вы не можете подписывать чужие заявки", 400);
+            $logger->error("пользоваетель с id " . $userId . "пытается подписывать заявки пользователя " . $statement->getAuthor()->getId());
+            throw new Exception("Доступ запрещен", 400);
         }
 
         if ($statement->getStatus() == StatusEnum::PENDING) {
@@ -60,11 +64,12 @@ class StatementService
     /**
      * @throws Exception
      */
-    public function delete(int $statementId, int $userId): Statement
+    public function delete(int $statementId, int $userId, LoggerInterface $logger): Statement
     {
         $statement = $this->findStatementById($statementId);
         if ($statement->getAuthor()->getId() != $userId) {
-            throw new Exception("Вы не можете удалять чужие заявки");
+            $logger->error("пользоваетель с id " . $userId . "пытается удалить заявки пользователя " . $statement->getAuthor()->getId());
+            throw new Exception("Доступ запрещен", 400);
         }
 
         if (in_array($statement->getStatus(), [StatusEnum::PENDING, StatusEnum::SIGNED])) {
@@ -80,11 +85,12 @@ class StatementService
     /**
      * @throws Exception
      */
-    public function edit(int $statementId, StatementDto $statementDto, int $userId): Statement
+    public function edit(int $statementId, StatementDto $statementDto, int $userId, LoggerInterface $logger): Statement
     {
         $statement = $this->findStatementById($statementId);
         if ($statement->getAuthor()->getId() != $userId) {
-            throw new Exception("Вы не можете редактировать чужие заявки", 400);
+            $logger->error("пользоваетель с id " . $userId . "пытается редактировать заявки пользователя " . $statement->getAuthor()->getId());
+            throw new Exception("Доступ запрещен", 400);
         }
 
         if ($statement->getStatus() == StatusEnum::PENDING) {
@@ -105,7 +111,7 @@ class StatementService
     {
         $statement = $this->statementRepository->find($statementId);
         if (!$statement) {
-            throw new Exception("Заявка не найдена", 400);
+            throw new Exception("Заявка не найдена", 404);
         }
         return $statement;
     }

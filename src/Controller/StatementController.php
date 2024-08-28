@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\DTO\StatementDto;
 use App\Service\StatementService;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,7 +16,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class StatementController extends AbstractController
 {
 
-    public function __construct(private readonly StatementService $statementService, private readonly Security $security, private readonly ValidatorInterface $validator)
+    public function __construct(
+        private readonly StatementService $statementService,
+        private readonly Security $security,
+        private readonly ValidatorInterface $validator
+    )
     {
     }
 
@@ -48,16 +53,15 @@ class StatementController extends AbstractController
      * @throws Exception
      */
     #[Route('/sign/{statementId}', methods: ['POST'])]
-    public function sign(int $statementId): JsonResponse
+    public function sign(int $statementId, LoggerInterface $logger): JsonResponse
     {
         try {
             $user = $this->security->getUser();
-            $statement = $this->statementService->sign($statementId, $user->getId());
+            $statement = $this->statementService->sign($statementId, $user->getId(), $logger);
             return $this->json($statement);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
         }
-
     }
 
     /**
@@ -65,11 +69,11 @@ class StatementController extends AbstractController
      * @throws Exception
      */
     #[Route('/delete/{statementId}', methods: ['DELETE'])]
-    public function delete(int $statementId): JsonResponse
+    public function delete(int $statementId, LoggerInterface $logger): JsonResponse
     {
         try {
             $user = $this->security->getUser();
-            $statement = $this->statementService->delete($statementId, $user->getId());
+            $statement = $this->statementService->delete($statementId, $user->getId(), $logger);
             return $this->json($statement);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());
@@ -81,7 +85,7 @@ class StatementController extends AbstractController
      * @throws Exception
      */
     #[Route('/edit/{statementId}', methods: ['PATCH'])]
-    public function edit(int $statementId, StatementDto $statementDto): JsonResponse
+    public function edit(int $statementId, StatementDto $statementDto, LoggerInterface $logger): JsonResponse
     {
         try{
             $user = $this->security->getUser();
@@ -90,7 +94,7 @@ class StatementController extends AbstractController
             if ($validationResponse) {
                 return $validationResponse;
             }
-            $statement = $this->statementService->edit($statementId, $statementDto, $user->getId());
+            $statement = $this->statementService->edit($statementId, $statementDto, $user->getId(), $logger);
             return $this->json($statement);
         } catch (Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], $e->getCode());

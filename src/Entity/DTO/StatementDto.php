@@ -26,5 +26,4 @@ class StatementDto implements RequestDtoInterface
     {
         $this->name = $name;
     }
-
 }

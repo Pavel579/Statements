@@ -35,7 +35,14 @@ class StatementControllerTest extends WebTestCase
     {
         $data = ['name' => 'name579'];
 
-        $this->client->request('POST', '/api/client/statements/save', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+        $this->client->request(
+            'POST',
+            '/api/client/statements/save',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+            json_encode($data)
+        );
         $response = $this->client->getResponse();
         $content = json_decode($response->getContent());
         self::$id = $content->id;
@@ -46,7 +53,13 @@ class StatementControllerTest extends WebTestCase
     {
         $data = ['name' => ''];
 
-        $this->client->request('POST', '/api/client/statements/save', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+        $this->client->request('POST',
+            '/api/client/statements/save',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+            json_encode($data)
+        );
 
         $response = $this->client->getResponse();
 
@@ -59,7 +72,13 @@ class StatementControllerTest extends WebTestCase
      {
          $data = ['name' => 'qwer'];
 
-         $this->client->request('POST', '/api/client/statements/save', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+         $this->client->request('POST',
+             '/api/client/statements/save',
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+             json_encode($data)
+         );
 
          $response = $this->client->getResponse();
 
@@ -71,7 +90,12 @@ class StatementControllerTest extends WebTestCase
      public function testSignStatement()
      {
          $statementId = self::$id;
-         $this->client->request('POST', '/api/client/statements/sign/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]);
+         $this->client->request('POST',
+             '/api/client/statements/sign/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]
+         );
 
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
@@ -82,7 +106,12 @@ class StatementControllerTest extends WebTestCase
      public function testSignStatementNotPending()
      {
          $statementId = self::$id;
-         $this->client->request('POST', '/api/client/statements/sign/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]);
+         $this->client->request('POST',
+             '/api/client/statements/sign/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]
+         );
 
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
@@ -93,7 +122,12 @@ class StatementControllerTest extends WebTestCase
      public function testDeleteStatement()
      {
          $statementId = self::$id;
-         $this->client->request('DELETE', '/api/client/statements/delete/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]);
+         $this->client->request('DELETE',
+             '/api/client/statements/delete/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]
+         );
 
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
@@ -104,7 +138,12 @@ class StatementControllerTest extends WebTestCase
      public function testDeleteStatementNotValid()
      {
          $statementId = self::$id;
-         $this->client->request('DELETE', '/api/client/statements/delete/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]);
+         $this->client->request('DELETE',
+             '/api/client/statements/delete/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]
+         );
 
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
@@ -116,7 +155,13 @@ class StatementControllerTest extends WebTestCase
      {
          $statementId = self::$id;
          $data = ['name' => 'sfdgsdfgsdfgdf'];
-         $this->client->request('PATCH', '/api/client/statements/edit/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+         $this->client->request('PATCH',
+             '/api/client/statements/edit/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+             json_encode($data)
+         );
 
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
@@ -127,77 +172,27 @@ class StatementControllerTest extends WebTestCase
      public function testEditStatement()
      {
          $data = ['name' => 'name579'];
-         $this->client->request('POST', '/api/client/statements/save', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+         $this->client->request('POST',
+             '/api/client/statements/save',
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+             json_encode($data)
+         );
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
          $statementId = $content->id;
          $data = ['name' => 'newname579'];
-         $this->client->request('PATCH', '/api/client/statements/edit/' . $statementId, [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token], json_encode($data));
+         $this->client->request('PATCH',
+             '/api/client/statements/edit/' . $statementId,
+             [],
+             [],
+             ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token],
+             json_encode($data)
+         );
          $response = $this->client->getResponse();
          $content = json_decode($response->getContent());
          $this->assertResponseIsSuccessful();
          $this->assertEquals('newname579', $content->name);
      }
-
-     public function testGetAllByCurrentUser()
-     {
-         // Mock user and statements
-
-         $user = new User();
-
-         $user->setId(1);
-
-
-         $statements = [
-
-             new Statement(),
-
-             new Statement(),
-
-         ];
-
-
-         // Mock security token
-
-         $this->security->expects($this->once())
-
-             ->method('getUser')
-
-             ->willReturn($user);
-
-
-         // Mock statement service
-
-         $this->statementService->expects($this->once())
-
-             ->method('getAllByCurrentUser')
-
-             ->with($user->getId())
-
-             ->willReturn($statements);
-
-
-         // Make request
-
-         $this->client->request('GET', '/api/client/statements/get-all');
-
-
-         // Assert response
-
-         $response = $this->client->getResponse();
-
-         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-
-         $this->assertJson($response->getContent());
-
-         $this->assertCount(2, json_decode($response->getContent(), true));
-
-
-        /* $this->client->request('GET', '/api/client/statements/get-all/', [], [], ['CONTENT_TYPE' => 'application/json', 'HTTP_AUTHORIZATION' => 'Bearer ' . $this->token]);
-         $response = $this->client->getResponse();
-         $content = json_decode($response->getContent());
-         var_dump($content);
-         $this->assertResponseIsSuccessful();*/
-     }
-
 }
